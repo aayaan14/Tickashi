@@ -1,35 +1,89 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
+import AddTodo from './AddTodo';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Load todos from localStorage on initial render
+  useEffect(() => {
+    const savedTodos = localStorage.getItem('todos');
+    if (savedTodos) {
+      setTodos(JSON.parse(savedTodos));
+    }
+    
+    // Check for user's preferred color scheme
+    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setDarkMode(localStorage.getItem('darkMode') === 'true' || prefersDarkMode);
+  }, []);
+
+  // Save todos to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
+  // Apply dark mode class to body
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
+
+  function addTodo(newTodo) {
+    setTodos([...todos, newTodo]);
+  }
+
+  function deleteTodo(indexToDelete) {
+    // Get the element to animate
+    const todoElement = document.querySelectorAll('li')[indexToDelete];
+    
+    if (todoElement) {
+      // Add the fadeOut animation
+      todoElement.style.animation = 'fadeOut 0.3s ease forwards';
+      
+      // Remove the todo after animation completes
+      setTimeout(() => {
+        setTodos(todos.filter((_, index) => index !== indexToDelete));
+      }, 300);
+    } else {
+      // Fallback if element not found
+      setTodos(todos.filter((_, index) => index !== indexToDelete));
+    }
+  }
+
+  function toggleDarkMode() {
+    setDarkMode(!darkMode);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="header-container">
+        <h1>
+          ToDo
+          <button 
+            className="dark-mode-toggle" 
+            onClick={toggleDarkMode} 
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </h1>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AddTodo addTodo={addTodo} />
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={index}>
+            {todo}
+            <button onClick={() => deleteTodo(index)}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
