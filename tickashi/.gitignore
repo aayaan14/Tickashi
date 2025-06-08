@@ -7,20 +7,73 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node.js
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg
+*.egg-info/
+.eggs/
+.env
+.venv
+venv/
+ENV/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Bytecode and build
+build/
+develop-eggs/
+dist/
+downloads/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.manifest
+*.spec
+
+# Virtual envs
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter notebooks
+.ipynb_checkpoints
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest
+.pytest_cache/
+
+# VS Code and JetBrains
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# macOS
 .DS_Store
+
+# Windows
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Vite
 .vite/
-__pycache__*
