@@ -1,91 +1,89 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import AddTodo from './AddTodo';
+import useDarkMode from './hooks/useDarkMode';
+import { API_URL } from './config';
 
 function App() {
-
   const [todos, setTodos] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
 
   useEffect(() => {
-    const savedTodos = localStorage.getItem('todos');
-    if (savedTodos) {
-      setTodos(JSON.parse(savedTodos));
-    }
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setDarkMode(localStorage.getItem('darkMode') === 'true' || prefersDarkMode);
+    fetch(`${API_URL}/todos`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Fetched todos from backend:", data);
+        setTodos(data);
+      });
   }, []);
+
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
-    localStorage.setItem('darkMode', darkMode);
-  }, [darkMode]);
-
   function addTodo(newTodoText) {
-    const newTodo = {
-      id: Date.now(),
-      text: newTodoText,
-      completed: false,
-    };
-    setTodos([...todos, newTodo]);
+    fetch(`${API_URL}/todos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ task: newTodoText, is_done: false })
+    })
+      .then(res => res.json())
+      .then(newTodo => setTodos(prev => [...prev, newTodo]));
   }
 
   function deleteTodo(idToDelete) {
-    setTodos(prevTodos => prevTodos.filter(todo => todo.id !== idToDelete));
-  }
-
-  function toggleDarkMode() {
-    setDarkMode(!darkMode);
+    fetch(`${API_URL}/todos/${idToDelete}`, {
+      method: "DELETE"
+    })
+      .then(() => setTodos(prev => prev.filter(todo => todo.id !== idToDelete)));
   }
 
   function toggleComplete(idToToggle) {
-    console.log("Toggling completion for:", idToToggle);
-    setTodos(prevTodos => {
-      const updated = prevTodos.map(todo =>
-        todo.id === idToToggle
-          ? { ...todo, completed: !todo.completed }
-          : todo
-      );
-      console.log("Updated todos:", updated);
-      return updated;
-    });
+    const todoToUpdate = todos.find(t => t.id === idToToggle);
+    if (!todoToUpdate) return;
+
+    fetch(`${API_URL}/todos/${idToToggle}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        task: todoToUpdate.task,
+        is_done: !todoToUpdate.completed
+      })
+    })
+      .then(res => res.json())
+      .then(updatedTodo => {
+        setTodos(prev => prev.map(todo =>
+          todo.id === idToToggle ? { ...todo, completed: updatedTodo.is_done } : todo
+        ));
+      });
   }
 
-  // Separate completed and active tasks
-  const activeTodos    = todos.filter(todo => !todo.completed);
+  const activeTodos = todos.filter(todo => !todo.completed);
   const completedTodos = todos.filter(todo => todo.completed);
-
-  console.log("Active todos:", activeTodos);
-  console.log("Completed todos:", completedTodos);
 
   return (
     <div className="todo-app-container">
       <div className="header-container">
         <h1>
           ToDo
-          <button className="dark-mode-toggle" onClick={toggleDarkMode}>
+          <button className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)}>
             {darkMode ? "☀️" : "🌙"}
           </button>
         </h1>
       </div>
+
       <AddTodo addTodo={addTodo} />
+
       <div className="todo-lists-container">
-        {/* Active tasks */}
         <ul className="todo-list">
           {activeTodos.length > 0 ? (
             activeTodos.map((todo) => (
-              <li
-                key={todo.id}
-                className="todo-item"
-              >
+              <li key={todo.id} className="todo-item">
                 <label className="todo-checkbox-container">
                   <input
                     type="checkbox"
@@ -96,10 +94,7 @@ function App() {
                   <span className="checkbox-custom"></span>
                 </label>
                 <span className="todo-text">{todo.text}</span>
-                <button
-                  className="delete-btn"
-                  onClick={() => deleteTodo(todo.id)}
-                >
+                <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>
                   Delete
                 </button>
               </li>
@@ -109,7 +104,6 @@ function App() {
           )}
         </ul>
 
-        {/* Completed tasks section */}
         {completedTodos.length > 0 && (
           <div className="completed-section">
             <div className="completed-header">
@@ -118,10 +112,7 @@ function App() {
             </div>
             <ul className="todo-list">
               {completedTodos.map((todo) => (
-                <li
-                  key={todo.id}
-                  className="todo-item completed"
-                >
+                <li key={todo.id} className="todo-item completed">
                   <label className="todo-checkbox-container">
                     <input
                       type="checkbox"
@@ -132,10 +123,7 @@ function App() {
                     <span className="checkbox-custom"></span>
                   </label>
                   <span className="todo-text">{todo.text}</span>
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteTodo(todo.id)}
-                  >
+                  <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>
                     Delete
                   </button>
                 </li>

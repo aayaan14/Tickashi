@@ -253,6 +253,7 @@ button:active {
   flex: 1;
   transition: all 0.3s ease;
   position: relative;
+  color: var(--text-color);  /* ✅ Ensure text uses the theme color */
 }
 
 .delete-btn {
