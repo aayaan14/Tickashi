@@ -93,7 +93,7 @@ function App() {
                   />
                   <span className="checkbox-custom"></span>
                 </label>
-                <span className="todo-text">{todo.text}</span>
+                <span className="todo-text">{todo.task}</span>
                 <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>
                   Delete
                 </button>
@@ -122,7 +122,7 @@ function App() {
                     />
                     <span className="checkbox-custom"></span>
                   </label>
-                  <span className="todo-text">{todo.text}</span>
+                  <span className="todo-text">{todo.task}</span>
                   <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>
                     Delete
                   </button>
