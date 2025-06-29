@@ -326,6 +326,13 @@ button:active {
   font-style: italic;
 }
 
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 2rem;
+  color: #ccc;
+}
+
 /* Animations */
 @keyframes slideIn {
   from {
