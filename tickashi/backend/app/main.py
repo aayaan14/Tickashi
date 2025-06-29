@@ -1,19 +1,23 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-from app.routes import todo_routes
-from app.database import Base, engine
+from app.routes import todo_routes  # your router
+from app.database import engine, Base
+from app.models.todo_model import Todo
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
-    yield
+# Create the tables
+Base.metadata.create_all(bind=engine)
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
+
+# Allow frontend origins (Vercel, local dev)
+origins = [
+    "https://tickashi.vercel.app",
+    "http://localhost:5173"
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://tickashi.vercel.app"],  # or ["*"] just for debugging
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
