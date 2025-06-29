@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import todo_routes  # your router
+from app.routes import todo_routes  
 from app.database import engine, Base
 from app.models.todo_model import Todo
 
