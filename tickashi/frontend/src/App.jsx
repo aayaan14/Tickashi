@@ -11,12 +11,16 @@ function App() {
   useEffect(() => {
     fetch(`${API_URL}/todos`)
       .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched todos from backend:", data);
-        setTodos(data);
-      });
+      .then((data) =>
+        setTodos(
+          data.map((todo) => ({
+            id: todo.id,
+            task: todo.task,
+            completed: todo.is_done,
+          }))
+        )
+      );
   }, []);
-
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -25,42 +29,52 @@ function App() {
   function addTodo(newTodoText) {
     fetch(`${API_URL}/todos`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ task: newTodoText, is_done: false })
     })
-      .then(res => res.json())
-      .then(newTodo => setTodos(prev => [...prev, newTodo]));
+      .then((res) => res.json())
+      .then((newTodo) =>
+        setTodos((prev) => [
+          ...prev,
+          {
+            id: newTodo.id,
+            task: newTodo.task,
+            completed: newTodo.is_done,
+          },
+        ])
+      );
   }
 
   function deleteTodo(idToDelete) {
     fetch(`${API_URL}/todos/${idToDelete}`, {
-      method: "DELETE"
-    })
-      .then(() => setTodos(prev => prev.filter(todo => todo.id !== idToDelete)));
+      method: "DELETE",
+    }).then(() =>
+      setTodos((prev) => prev.filter((todo) => todo.id !== idToDelete))
+    );
   }
 
   function toggleComplete(idToToggle) {
-    const todoToUpdate = todos.find(t => t.id === idToToggle);
+    const todoToUpdate = todos.find((t) => t.id === idToToggle);
     if (!todoToUpdate) return;
 
     fetch(`${API_URL}/todos/${idToToggle}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: todoToUpdate.task,
-        is_done: !todoToUpdate.completed
-      })
+        is_done: !todoToUpdate.completed,
+      }),
     })
-      .then(res => res.json())
-      .then(updatedTodo => {
-        setTodos(prev => prev.map(todo =>
-          todo.id === idToToggle ? { ...todo, completed: updatedTodo.is_done } : todo
-        ));
-      });
+      .then((res) => res.json())
+      .then((updatedTodo) =>
+        setTodos((prev) =>
+          prev.map((todo) =>
+            todo.id === idToToggle
+              ? { ...todo, completed: updatedTodo.is_done }
+              : todo
+          )
+        )
+      );
   }
 
   const activeTodos = todos.filter(todo => !todo.completed);
