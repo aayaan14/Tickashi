@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import AddTodo from './AddTodo';
 import useDarkMode from './hooks/useDarkMode';
-import { API_URL } from './config';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [todos, setTodos] = useState([]);
