@@ -77,3 +77,7 @@ dmypy.json
 
 # Vite
 .vite/
+
+# SQLite DB
+*.db
+*.sqlite3
