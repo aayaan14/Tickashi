@@ -14,7 +14,6 @@ function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
-      console.log("Session:", session);
     });
 
     // Listen for auth changes
