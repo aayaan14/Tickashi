@@ -7,3 +7,4 @@ class Todo(Base):
     id      = Column(Integer, primary_key=True, index=True)
     task    = Column(String, nullable=False)
     is_done = Column(Boolean, default=False)
+    user_id = Column(String, nullable=False)

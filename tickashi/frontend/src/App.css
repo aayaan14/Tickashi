@@ -7,7 +7,7 @@
   --primary-hover: #4f46e5;
   --bg-color: #f9fafb;
   --card-bg: #ffffff;
-  --text-color: #374151; 
+  --text-color: #374151;
   --text-light: #6b7280;
   --border-color: #e5e7eb;
   --delete-color: #ef4444;
@@ -28,7 +28,7 @@
   --primary-hover: #6366f1;
   --bg-color: #111827;
   --card-bg: #1f2937;
-  --text-color: #f9fafb; 
+  --text-color: #f9fafb;
   --text-light: #d1d5db;
   --border-color: #374151;
   --delete-color: #ef4444;
@@ -227,7 +227,7 @@ button:active {
   transition: all 0.2s ease;
 }
 
-.todo-checkbox:checked ~ .checkbox-custom {
+.todo-checkbox:checked~.checkbox-custom {
   background-color: var(--success-color);
   border-color: var(--success-color);
 }
@@ -245,7 +245,7 @@ button:active {
   transform: rotate(45deg);
 }
 
-.todo-checkbox:checked ~ .checkbox-custom:after {
+.todo-checkbox:checked~.checkbox-custom:after {
   display: block;
 }
 
@@ -253,7 +253,8 @@ button:active {
   flex: 1;
   transition: all 0.3s ease;
   position: relative;
-  color: var(--text-color);  /* ✅ Ensure text uses the theme color */
+  color: var(--text-color);
+  /* ✅ Ensure text uses the theme color */
 }
 
 .delete-btn {
@@ -339,6 +340,7 @@ button:active {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -350,6 +352,7 @@ button:active {
     opacity: 1;
     transform: translateY(0);
   }
+
   to {
     opacity: 0;
     transform: translateY(10px);
@@ -360,6 +363,7 @@ button:active {
   from {
     width: 0;
   }
+
   to {
     width: 100%;
   }
@@ -371,7 +375,7 @@ button:active {
     border-radius: 0;
     box-shadow: none;
   }
-  
+
   body {
     padding: 0;
   }
