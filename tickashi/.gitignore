@@ -81,3 +81,4 @@ dmypy.json
 # SQLite DB
 *.db
 *.sqlite3
+backend/alembic.ini
